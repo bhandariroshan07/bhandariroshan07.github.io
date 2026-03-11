@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roshan Bhandari | Geomatics Engineer</title>
+  <meta name="description" content="Roshan Bhandari – Geomatics Engineer specializing in UAV, LiDAR, GIS, and GeoAI."/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ─────────────────────────────────────────
+       DESIGN DIRECTION:
+       Al-folio inspired academic layout.
+       Dark theme: deep navy/charcoal base.
+       Accent: topographic amber/ochre + satellite teal.
+       Background: subtle SVG topographic contour lines.
+       Typography: Lora (serif display) + Outfit (body) + IBM Plex Mono (code/labels).
+    ───────────────────────────────────────── */
+    :root {
+      --bg:        #0d1117;
+      --bg2:       #111820;
+      --bg3:       #161e28;
+      --surface:   rgba(255,255,255,0.04);
+      --border:    rgba(255,255,255,0.08);
+      --amber:     #e8a838;
+      --amber-dim: rgba(232,168,56,0.15);
+      --teal:      #38c9b8;
+      --teal-dim:  rgba(56,201,184,0.12);
+      --text:      #d4dbe8;
+      --muted:     #6b7a96;
+      --faint:     #3a4558;
+      --white:     #f0f4fa;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 400;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ── TOPO BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cdefs%3E%3Cstyle%3Epath%7Bfill:none;stroke:rgba(232,168,56,0.045);stroke-width:1%7D%3C/style%3E%3C/defs%3E%3Cpath d='M0,400 Q100,320 200,400 T400,380 T600,400 T800,390'/%3E%3Cpath d='M0,360 Q120,280 240,350 T460,330 T640,360 T800,345'/%3E%3Cpath d='M0,440 Q80,370 200,440 T420,420 T620,440 T800,430'/%3E%3Cpath d='M0,300 Q150,220 300,300 T560,270 T760,295 T800,285'/%3E%3Cpath d='M0,490 Q110,420 240,490 T480,465 T680,490 T800,475'/%3E%3Cpath d='M0,250 Q180,170 340,250 T580,220 T800,240'/%3E%3Cpath d='M0,530 Q90,460 210,530 T440,505 T660,530 T800,515'/%3E%3Cpath d='M0,200 Q160,120 320,200 T600,170 T800,190'/%3E%3Cpath d='M0,570 Q130,495 270,565 T520,540 T760,565 T800,555'/%3E%3Cpath d='M0,150 Q200,70 380,150 T660,120 T800,140'/%3E%3Cpath d='M0,610 Q110,535 250,605 T500,578 T740,603 T800,595'/%3E%3Cpath d='M0,100 Q220,30 400,100 T680,70 T800,90'/%3E%3Cpath d='M0,650 Q140,575 300,645 T560,618 T800,640'/%3E%3Cpath d='M0,700 Q160,625 330,695 T600,665 T800,685'/%3E%3Cpath d='M0,50 Q240,0 430,50 T720,25 T800,40'/%3E%3Cpath d='M0,750 Q180,680 370,748 T660,720 T800,740'/%3E%3C/svg%3E");
+      background-size: 800px 800px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.8;
+    }
+
+    /* ── NAV ── */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 60px;
+      background: rgba(13,17,23,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    #navbar.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.4); }
+    .nav-brand {
+      font-family: 'Lora', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+    .nav-brand span { color: var(--amber); }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--amber);
+      border-color: var(--amber);
+    }
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text);
+      padding: 4px;
+    }
+
+    /* ── LAYOUT WRAPPER ── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ─────────────────── HERO ─────────────────── */
+    #home {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 60px;
+    }
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 72px;
+      align-items: center;
+      padding: 80px 0;
+      width: 100%;
+    }
+    .hero-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--amber);
+    }
+    h1.hero-name {
+      font-family: 'Lora', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 600;
+      line-height: 1.08;
+      color: var(--white);
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    }
+    h1.hero-name em {
+      font-style: italic;
+      color: var(--amber);
+    }
+    .hero-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--teal);
+      margin-bottom: 28px;
+      letter-spacing: 0.04em;
+    }
+    .hero-bio {
+      font-size: 1rem;
+      color: #8fa0bb;
+      max-width: 560px;
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: 5px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.22s;
+    }
+    .btn-amber {
+      background: var(--amber);
+      color: #0d1117;
+    }
+    .btn-amber:hover {
+      background: #f5bc4a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(232,168,56,0.35);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+      transform: translateY(-2px);
+    }
+
+    /* Profile card */
+    .profile-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--amber), var(--teal));
+    }
+    .profile-map-banner {
+      height: 100px;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 18px, rgba(56,201,184,0.06) 18px, rgba(56,201,184,0.06) 19px),
+        repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(56,201,184,0.06) 18px, rgba(56,201,184,0.06) 19px),
+        linear-gradient(135deg, #0d1f2d, #0a2230);
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-map-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 50%, rgba(232,168,56,0.12), transparent 70%);
+    }
+    .profile-avatar-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: -36px;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 16px;
+    }
+    .profile-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--teal));
+      border: 3px solid var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Lora', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #0d1117;
+    }
+    .profile-body { padding: 0 24px 24px; }
+    .profile-name {
+      font-family: 'Lora', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .profile-role {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--teal);
+      text-align: center;
+      letter-spacing: 0.06em;
+      margin-bottom: 20px;
+    }
+    .profile-info { display: flex; flex-direction: column; gap: 10px; }
+    .profile-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .profile-info-item svg { flex-shrink: 0; margin-top: 2px; color: var(--amber); }
+    .profile-info-item a { color: var(--muted); text-decoration: none; }
+    .profile-info-item a:hover { color: var(--amber); }
+    .profile-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 18px 0;
+    }
+    .profile-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+    }
+    .p-stat {
+      text-align: center;
+      padding: 10px 0;
+      border-right: 1px solid var(--border);
+    }
+    .p-stat:last-child { border-right: none; }
+    .p-stat-num {
+      font-family: 'Lora', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--amber);
+    }
+    .p-stat-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─────────────────── SECTIONS SHARED ─────────────────── */
+    section:not(#home) {
+      padding: 90px 0;
+      border-top: 1px solid var(--border);
+    }
+    .section-header { margin-bottom: 52px; }
+    .section-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-tag::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--amber);
+      opacity: 0.5;
+    }
+    h2.section-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    h2.section-title em {
+      font-style: italic;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ─────────────────── ABOUT ─────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .about-text p {
+      color: #8fa0bb;
+      margin-bottom: 18px;
+      font-size: 0.97rem;
+    }
+    .about-text p strong { color: var(--text); font-weight: 500; }
+
+    .skills-section-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .skills-list { display: flex; flex-direction: column; gap: 14px; }
+    .skill-row { }
+    .skill-row-label {
+      font-size: 0.82rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .skill-row-label span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .skill-bar-bg {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--amber), var(--teal));
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* Research interests chips */
+    .interests-wrap { margin-top: 32px; }
+    .interests-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .chip {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      padding: 5px 12px;
+      border-radius: 4px;
+      background: var(--amber-dim);
+      color: var(--amber);
+      border: 1px solid rgba(232,168,56,0.2);
+      letter-spacing: 0.03em;
+    }
+    .chip.teal {
+      background: var(--teal-dim);
+      color: var(--teal);
+      border-color: rgba(56,201,184,0.2);
+    }
+
+    /* Languages */
+    .lang-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .lang-item { display: flex; flex-direction: column; gap: 6px; }
+    .lang-name { font-size: 0.82rem; color: var(--text); }
+    .lang-pips { display: flex; gap: 4px; }
+    .pip {
+      width: 10px; height: 10px;
+      border-radius: 2px;
+    }
+    .pip.on { background: var(--amber); }
+    .pip.off { background: var(--faint); }
+
+    /* ─────────────────── EXPERIENCE ─────────────────── */
+    #experience { background: var(--bg2); }
+    .timeline { position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+    }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 32px;
+      padding-bottom: 52px;
+      position: relative;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-left { padding-top: 2px; }
+    .tl-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      line-height: 1.6;
+    }
+    .tl-badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: var(--amber-dim);
+      color: var(--amber);
+      border: 1px solid rgba(232,168,56,0.2);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .tl-badge.current { background: var(--teal-dim); color: var(--teal); border-color: rgba(56,201,184,0.2); }
+    .tl-right {
+      position: relative;
+      padding-left: 24px;
+    }
+    .tl-right::before {
+      content: '';
+      position: absolute;
+      left: -188px;
+      top: 8px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 0 3px rgba(232,168,56,0.2);
+      z-index: 1;
+    }
+    .tl-role {
+      font-family: 'Lora', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .tl-org {
+      font-size: 0.88rem;
+      color: var(--teal);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .tl-loc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tl-bullets { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .tl-bullets li {
+      font-size: 0.9rem;
+      color: #7a8daa;
+      padding-left: 18px;
+      position: relative;
+    }
+    .tl-bullets li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--amber);
+      font-size: 0.7rem;
+      top: 3px;
+    }
+
+    /* ─────────────────── PROJECTS ─────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 22px;
+    }
+    .proj-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      display: flex;
+      flex-direction: column;
+    }
+    .proj-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      border-color: rgba(232,168,56,0.25);
+    }
+    .proj-banner {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .proj-banner-water { background: linear-gradient(135deg, #0a2230 0%, #0d3344 50%, #0a1f2d 100%); }
+    .proj-banner-terrain { background: linear-gradient(135deg, #1a2010 0%, #253018 50%, #1a2010 100%); }
+    .proj-banner-solar { background: linear-gradient(135deg, #2d1f00 0%, #3d2b00 50%, #2d1f00 100%); }
+    .proj-banner-flood { background: linear-gradient(135deg, #001a2d 0%, #002540 50%, #001a2d 100%); }
+    .proj-banner-heritage { background: linear-gradient(135deg, #1a0f1a 0%, #261326 50%, #1a0f1a 100%); }
+    .proj-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.02) 8px, rgba(255,255,255,0.02) 9px);
+    }
+    .proj-emoji { position: relative; z-index: 1; }
+    .proj-body { padding: 22px; flex: 1; display: flex; flex-direction: column; }
+    .proj-title {
+      font-family: 'Lora', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+    .proj-desc {
+      font-size: 0.85rem;
+      color: #7a8daa;
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+    .proj-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .proj-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.63rem;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      letter-spacing: 0.04em;
+    }
+
+    /* ─────────────────── EDUCATION ─────────────────── */
+    #education { background: var(--bg2); }
+    .edu-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .edu-cards { display: flex; flex-direction: column; gap: 16px; }
+    .edu-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .edu-card:hover { border-color: rgba(232,168,56,0.3); }
+    .edu-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .edu-degree {
+      font-family: 'Lora', serif;
+      font-weight: 600;
+      font-size: 0.97rem;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .edu-school { font-size: 0.84rem; color: var(--teal); margin-bottom: 4px; }
+    .edu-meta { font-size: 0.76rem; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+
+    /* Scores */
+    .scores-wrap { display: flex; flex-direction: column; gap: 16px; }
+    .score-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+    }
+    .score-card-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .score-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .score-num {
+      font-family: 'Lora', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--amber);
+    }
+    .score-subs { display: flex; flex-direction: column; gap: 6px; }
+    .score-sub {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .score-sub span:first-child { color: var(--muted); }
+    .score-sub span:last-child { color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; }
+
+    /* ─────────────────── CERTIFICATES ─────────────────── */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .cert-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+      transition: border-color 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .cert-card:hover {
+      border-color: rgba(56,201,184,0.3);
+      transform: translateY(-3px);
+    }
+    .cert-icon-wrap {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      background: var(--teal-dim);
+      border: 1px solid rgba(56,201,184,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .cert-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.88rem;
+      color: var(--white);
+      line-height: 1.4;
+    }
+    .cert-org {
+      font-size: 0.78rem;
+      color: var(--teal);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─────────────────── CONTACT / FOOTER ─────────────────── */
+    #contact { background: var(--bg2); }
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .contact-text {
+      font-size: 0.97rem;
+      color: #8fa0bb;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .contact-links { display: flex; flex-direction: column; gap: 16px; }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .contact-link:hover {
+      border-color: rgba(232,168,56,0.3);
+      background: var(--amber-dim);
+    }
+    .contact-link-icon {
+      width: 36px; height: 36px;
+      border-radius: 7px;
+      background: var(--amber-dim);
+      border: 1px solid rgba(232,168,56,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .contact-link-info { flex: 1; }
+    .contact-link-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .contact-link-val {
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .refs-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+    }
+    .refs-title {
+      font-family: 'Lora', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .ref-item { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .ref-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .ref-name { font-weight: 600; font-size: 0.9rem; color: var(--white); margin-bottom: 3px; }
+    .ref-pos { font-size: 0.8rem; color: #8fa0bb; margin-bottom: 8px; line-height: 1.4; }
+    .ref-contacts { display: flex; flex-direction: column; gap: 4px; }
+    .ref-contact { font-size: 0.78rem; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+
+    /* Footer */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 36px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-brand {
+      font-family: 'Lora', serif;
+      font-size: 0.97rem;
+      color: var(--white);
+    }
+    .footer-brand span { color: var(--amber); }
+    .footer-copy {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .footer-domain {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--teal);
+    }
+
+    /* ─────────────────── SCROLL REVEAL ─────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─────────────────── RESPONSIVE ─────────────────── */
+    @media (max-width: 900px) {
+      #navbar { padding: 0 20px; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: rgba(13,17,23,0.97); padding: 20px; gap: 16px; border-bottom: 1px solid var(--border); }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: block; }
+      .page-wrap { padding: 0 20px; }
+      .hero-layout { grid-template-columns: 1fr; gap: 48px; padding: 70px 0; }
+      .profile-card { max-width: 360px; }
+      .about-grid, .edu-layout, .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+      .tl-item { grid-template-columns: 1fr; gap: 8px; }
+      .tl-right { padding-left: 0; }
+      .tl-right::before { left: -20px; top: 6px; }
+      .timeline::before { display: none; }
+      footer .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav id="navbar">
+  <a class="nav-brand" href="#home">Roshan <span>Bhandari</span></a>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HOME ═══ -->
+<section id="home">
+  <div class="page-wrap">
+    <div class="hero-layout">
+      <div class="hero-text">
+        <div class="hero-eyebrow">Geomatics Engineer</div>
+        <h1 class="hero-name">Roshan<br/><em>Bhandari</em></h1>
+        <div class="hero-title">// GIS · LiDAR · UAV · GeoAI · Remote Sensing</div>
+        <p class="hero-bio">
+          Geomatics engineer bridging <strong style="color:var(--text)">high-resolution remote sensing</strong> with 
+          <strong style="color:var(--text)">machine learning</strong> — from UAV flight missions over solar sites 
+          to bathymetric lake surveys and AI-driven landslide detection.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-amber" href="mailto:roshan.b700@gmail.com">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Get in Touch
+          </a>
+          <a class="btn btn-ghost" href="#projects">
+            View Projects
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Profile Card -->
+      <div>
+        <div class="profile-card">
+          <div class="profile-map-banner"></div>
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar">RB</div>
+          </div>
+          <div class="profile-body">
+            <div class="profile-name">Roshan Bhandari</div>
+            <div class="profile-role">GIS Officer · Geo-3D Modelling</div>
+            <div class="profile-info">
+              <div class="profile-info-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <a href="mailto:roshan.b700@gmail.com">roshan.b700@gmail.com</a>
+              </div>
+              <div class="profile-info-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9a16 16 0 0 0 6.29 6.29l1.42-1.42a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                +977-9819143494
+              </div>
+              <div class="profile-info-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Kathmandu, Nepal
+              </div>
+              <div class="profile-info-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                roshanbhandari7.com.np
+              </div>
+            </div>
+            <div class="profile-divider"></div>
+            <div class="profile-stats">
+              <div class="p-stat">
+                <div class="p-stat-num">5+</div>
+                <div class="p-stat-label">Projects</div>
+              </div>
+              <div class="p-stat">
+                <div class="p-stat-num">7.0</div>
+                <div class="p-stat-label">IELTS</div>
+              </div>
+              <div class="p-stat">
+                <div class="p-stat-num">319</div>
+                <div class="p-stat-label">GRE</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="page-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">01 — About Me</div>
+      <h2 class="section-title">Mapping the World,<br/><em>One Dataset at a Time</em></h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>I am a <strong>Geomatics Engineer</strong> with hands-on experience in UAV-based data acquisition, LiDAR point cloud processing, and geospatial analytics. My work translates raw multi-sensor data into actionable spatial intelligence for infrastructure, environmental, and hazard applications.</p>
+        <p>From operating <strong>Matrice 300 RTK drones</strong> over solar sites in Rolpa to conducting <strong>RTK echo-sounding surveys</strong> on Phewa and Kulekhani lakes, I thrive at the intersection of fieldwork and data-driven analysis.</p>
+        <p>My long-term research vision is to integrate <strong>GIS, LiDAR, SAR, hyperspectral sensing, and GeoAI</strong> to build machine learning pipelines for 3D terrain characterization and data-driven natural hazard assessment.</p>
+
+        <div class="interests-wrap">
+          <div class="skills-section-title">Research Interests</div>
+          <div class="interests-chips">
+            <span class="chip">GIS & Spatial Analysis</span>
+            <span class="chip">LiDAR Processing</span>
+            <span class="chip teal">SAR Remote Sensing</span>
+            <span class="chip teal">Hyperspectral Imaging</span>
+            <span class="chip">Machine Learning</span>
+            <span class="chip">Deep Learning</span>
+            <span class="chip teal">GeoAI</span>
+            <span class="chip">UAV Surveying</span>
+            <span class="chip teal">3D Terrain Modeling</span>
+            <span class="chip">Hazard Assessment</span>
+          </div>
+        </div>
+
+        <div class="interests-wrap">
+          <div class="skills-section-title">Languages</div>
+          <div class="lang-grid">
+            <div class="lang-item">
+              <div class="lang-name">English</div>
+              <div class="lang-pips">
+                <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
+              </div>
+            </div>
+            <div class="lang-item">
+              <div class="lang-name">Nepali</div>
+              <div class="lang-pips">
+                <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
+              </div>
+            </div>
+            <div class="lang-item">
+              <div class="lang-name">Hindi</div>
+              <div class="lang-pips">
+                <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip off"></div><div class="pip off"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-1">
+        <div class="skills-section-title">Technical Proficiency</div>
+        <div class="skills-list">
+          <div class="skill-row">
+            <div class="skill-row-label">ArcGIS Pro / QGIS / Global Mapper <span>Expert</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="92"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-row-label">LiDAR Processing (LiDAR360, FARO Scene) <span>Advanced</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-row-label">UAV / Drone Operations <span>Advanced</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-row-label">Python (GDAL, GeoPandas, Scikit-learn) <span>Advanced</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-row-label">ENVI / Pix4D / Agisoft Metashape <span>Advanced</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="78"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-row-label">Bathymetric Surveying (RTK + Echo-Sounder) <span>Intermediate</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-row-label">Machine Learning / GeoAI <span>Intermediate</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="68"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+  <div class="page-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">02 — Experience</div>
+      <h2 class="section-title">Professional <em>Journey</em></h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-left">
+          <div class="tl-date">Apr 2025 – Present</div>
+          <span class="tl-badge current">Current</span>
+        </div>
+        <div class="tl-right">
+          <div class="tl-role">GIS Officer</div>
+          <div class="tl-org">Geo-3D Modelling</div>
+          <div class="tl-loc">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Kathmandu, Bagmati, Nepal
+          </div>
+          <ul class="tl-bullets">
+            <li>Led geospatial mapping projects including bathymetric surveys, topographic mapping, and hydrological assessments.</li>
+            <li>Acquired and processed LiDAR, UAV, and GNSS data to produce high-resolution DEMs, DTMs, and 3D models.</li>
+            <li>Supported project workflows through Python-based automation for data cleaning, coordinate transformation, and GIS processing tasks.</li>
+            <li>Analyzed multispectral and radar imagery in ENVI and ArcGIS Pro for land cover mapping, flood modeling, and change detection.</li>
+            <li>Generated topographic maps, 3D visualizations, and technical reports with rigorous quality control.</li>
+            <li>Collaborated with engineers, planners, and architects to apply geospatial insights in projects.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-left">
+          <div class="tl-date">Jun 2024 – Aug 2024</div>
+          <span class="tl-badge">Internship</span>
+        </div>
+        <div class="tl-right">
+          <div class="tl-role">Intern Geomatics Engineer</div>
+          <div class="tl-org">Center for Space Science and Geomatics Studies (CSSGS)</div>
+          <div class="tl-loc">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Pokhara, Gandaki, Nepal
+          </div>
+          <ul class="tl-bullets">
+            <li>Conducted landslide susceptibility mapping using GIS and remote sensing techniques, focusing on terrain parameters and land cover data.</li>
+            <li>Assisted in preprocessing satellite imagery and integrating DEM data for spatial analysis.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROJECTS ═══ -->
+<section id="projects">
+  <div class="page-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">03 — Projects</div>
+      <h2 class="section-title">Field Work &amp; <em>Research</em></h2>
+    </div>
+    <div class="projects-grid">
+
+      <div class="proj-card reveal">
+        <div class="proj-banner proj-banner-water"><span class="proj-emoji">💧</span></div>
+        <div class="proj-body">
+          <div class="proj-title">Water Supply & Demand Simulation — Pokhara Valley</div>
+          <p class="proj-desc">Final year project predicting WSDR from 2001–2041 using ML integrated with system dynamics modelling. Historical water supply, consumption, and climatic data analyzed to simulate future supply-demand gaps.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Machine Learning</span>
+            <span class="proj-tag">System Dynamics</span>
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">GIS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal reveal-delay-1">
+        <div class="proj-banner proj-banner-solar"><span class="proj-emoji">☀️</span></div>
+        <div class="proj-body">
+          <div class="proj-title">UAV-LiDAR Topographic Survey — 50 MW Solar PV, Rolpa</div>
+          <p class="proj-desc">Operated Matrice 300 RTK with Penmuse P1 camera and H600 LiDAR. Processed data through LiGeoreference and LiDAR360 to generate 3D point clouds, DEM, DSM, contour maps, and orthomosaics for site planning.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">LiDAR</span>
+            <span class="proj-tag">UAV / Drone</span>
+            <span class="proj-tag">LiDAR360</span>
+            <span class="proj-tag">DJI Terra</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal reveal-delay-2">
+        <div class="proj-banner proj-banner-water"><span class="proj-emoji">🌊</span></div>
+        <div class="proj-body">
+          <div class="proj-title">Bathymetric Survey — Phewa & Kulekhani Lakes</div>
+          <p class="proj-desc">RTK-integrated echo sounding to generate detailed underwater terrain models. Fused above- and below-water elevation data for seamless 3D lake terrain reconstruction and sedimentation volume analysis of Kulekhani reservoir.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Bathymetry</span>
+            <span class="proj-tag">Echo-Sounder</span>
+            <span class="proj-tag">RTK GNSS</span>
+            <span class="proj-tag">3D Modeling</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <div class="proj-banner proj-banner-flood"><span class="proj-emoji">🌧️</span></div>
+        <div class="proj-body">
+          <div class="proj-title">Hydrological Survey & Flood Risk Assessment — Chandrauta</div>
+          <p class="proj-desc">Comprehensive hydrological study assessing flood risk for a proposed solar development site. UAV imagery processed to generate DEM and orthomosaic. GIS-based catchment analysis and peak discharge estimation to produce flood risk maps.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Hydrology</span>
+            <span class="proj-tag">UAV</span>
+            <span class="proj-tag">ArcGIS Pro</span>
+            <span class="proj-tag">DEM Analysis</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal reveal-delay-1">
+        <div class="proj-banner proj-banner-heritage"><span class="proj-emoji">🛕</span></div>
+        <div class="proj-body">
+          <div class="proj-title">3D Modelling of Krishna Mandir via Terrestrial Laser Scanning</div>
+          <p class="proj-desc">High-precision TLS of Krishna Mandir using FARO Focus Premium. Systematic multi-position data acquisition to ensure full architectural coverage. Point cloud registered in FARO Scene to produce accurate georeferenced 3D heritage models.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">TLS</span>
+            <span class="proj-tag">FARO Scene</span>
+            <span class="proj-tag">Point Cloud</span>
+            <span class="proj-tag">Heritage Doc.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EDUCATION ═══ -->
+<section id="education">
+  <div class="page-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">04 — Education</div>
+      <h2 class="section-title">Academic <em>Background</em></h2>
+    </div>
+    <div class="edu-layout">
+      <div class="edu-cards reveal">
+        <div class="edu-card">
+          <div class="edu-icon">🎓</div>
+          <div>
+            <div class="edu-degree">Bachelor's in Geomatics Engineering</div>
+            <div class="edu-school">Tribhuvan University, Western Regional Campus</div>
+            <div class="edu-meta">2019 – 2024 &nbsp;·&nbsp; 70%</div>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">📚</div>
+          <div>
+            <div class="edu-degree">+2 Science</div>
+            <div class="edu-school">Sagarmatha Higher Secondary School, Pokhara</div>
+            <div class="edu-meta">2017 – 2019 &nbsp;·&nbsp; GPA 3.43</div>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">🏫</div>
+          <div>
+            <div class="edu-degree">Secondary Education Examination (SEE)</div>
+            <div class="edu-school">Dhawalagiri Boarding School, Hemja</div>
+            <div class="edu-meta">2017 &nbsp;·&nbsp; GPA 3.75</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scores-wrap reveal reveal-delay-1">
+        <div class="score-card">
+          <div class="score-card-header">
+            <div class="score-label">IELTS Academic</div>
+            <div class="score-num">7.0</div>
+          </div>
+          <div class="score-subs">
+            <div class="score-sub"><span>Listening</span><span>8.0</span></div>
+            <div class="score-sub"><span>Reading</span><span>7.5</span></div>
+            <div class="score-sub"><span>Writing</span><span>6.0</span></div>
+            <div class="score-sub"><span>Speaking</span><span>7.0</span></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-header">
+            <div class="score-label">GRE General Test</div>
+            <div class="score-num">319</div>
+          </div>
+          <div class="score-subs">
+            <div class="score-sub"><span>Verbal Reasoning</span><span>152</span></div>
+            <div class="score-sub"><span>Quantitative</span><span>167</span></div>
+            <div class="score-sub"><span>Analytical Writing</span><span>3.5</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CERTIFICATIONS ═══ -->
+<section id="certifications">
+  <div class="page-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">05 — Certifications & Training</div>
+      <h2 class="section-title">Continuous <em>Learning</em></h2>
+    </div>
+    <div class="cert-grid">
+      <div class="cert-card reveal">
+        <div class="cert-icon-wrap">🛰️</div>
+        <div class="cert-title">AI-Supported Landslide Detection & Susceptibility Analysis from Sentinel-2 and Introduction to Radar Remote Sensing</div>
+        <div class="cert-org">G.E.O.S Ingenieurgesellschaft mbH — Dept. of Mines and Geology</div>
+      </div>
+      <div class="cert-card reveal reveal-delay-1">
+        <div class="cert-icon-wrap">📡</div>
+        <div class="cert-title">Training on DGPS and Terrestrial LiDAR Scanner</div>
+        <div class="cert-org">Center for Space Science and Geomatics Studies (CSSGS)</div>
+      </div>
+      <div class="cert-card reveal reveal-delay-2">
+        <div class="cert-icon-wrap">🗺️</div>
+        <div class="cert-title">ArcGIS, QGIS, Remote Sensing, Drones and UAVs</div>
+        <div class="cert-org">Department of Geomatics Engineering, IOE, WRC</div>
+      </div>
+      <div class="cert-card reveal">
+        <div class="cert-icon-wrap">🌐</div>
+        <div class="cert-title">Global Navigation Satellite System (GNSS) Training/Workshop</div>
+        <div class="cert-org">Center for Space Science and Geomatics Studies (CSSGS)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="page-wrap">
+    <div class="section-header reveal">
+      <div class="section-tag">06 — Contact</div>
+      <h2 class="section-title">Let's <em>Connect</em></h2>
+    </div>
+    <div class="contact-layout">
+      <div class="reveal">
+        <p class="contact-text">I'm actively looking for research collaborations and opportunities in UAV surveying, LiDAR applications, and geospatial machine learning. Whether you're from a research group, a geospatial firm, or a graduate program — I'd love to hear from you.</p>
+        <div class="contact-links">
+          <a class="contact-link" href="mailto:roshan.b700@gmail.com">
+            <div class="contact-link-icon">✉️</div>
+            <div class="contact-link-info">
+              <div class="contact-link-label">Email</div>
+              <div class="contact-link-val">roshan.b700@gmail.com</div>
+            </div>
+          </a>
+          <a class="contact-link" href="tel:+9779819143494">
+            <div class="contact-link-icon">📞</div>
+            <div class="contact-link-info">
+              <div class="contact-link-label">Phone</div>
+              <div class="contact-link-val">+977-9819143494</div>
+            </div>
+          </a>
+          <a class="contact-link" href="#">
+            <div class="contact-link-icon">📍</div>
+            <div class="contact-link-info">
+              <div class="contact-link-label">Location</div>
+              <div class="contact-link-val">Kathmandu, Bagmati, Nepal</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="refs-card reveal reveal-delay-1">
+        <div class="refs-title">References</div>
+        <div class="ref-item">
+          <div class="ref-name">Umesh Bhurtyal</div>
+          <div class="ref-pos">Head of Department & Assistant Professor, Dept. of Geomatics Engineering, Western Regional Campus, Tribhuvan University</div>
+          <div class="ref-contacts">
+            <div class="ref-contact">✉ umbhurtyal@wrc.edu.np</div>
+            <div class="ref-contact">📞 +977-9864899712</div>
+          </div>
+        </div>
+        <div class="ref-item">
+          <div class="ref-name">Netra Bahadur Katuwal</div>
+          <div class="ref-pos">Deputy Head of Department, Dept. of Geomatics Engineering, Western Regional Campus, Tribhuvan University</div>
+          <div class="ref-contacts">
+            <div class="ref-contact">✉ netra@ioepas.edu.np</div>
+            <div class="ref-contact">📞 +977-9866292619</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Roshan <span>Bhandari</span></div>
+    <div class="footer-domain">roshanbhandari7.com.np</div>
+    <div class="footer-copy">© 2025 · Built for GitHub Pages</div>
+  </div>
+</footer>
+
+<script>
+  // Navbar scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => observer.observe(s));
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const revObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        revObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => revObs.observe(el));
+
+  // Skill bars animation
+  const barObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+        barObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.skills-list').forEach(el => barObs.observe(el));
+
+  // Close mobile nav on link click
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.remove('open');
+    });
+  });
+</script>
+</body>
+</html>
